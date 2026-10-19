@@ -29,6 +29,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import PaymentModal from "@/components/stellar/PaymentModal";
+import { VerifiedBadge } from "@/components/atoms/VerifiedBadge";
 import { useStellar } from "@/components/stellar/StellarProvider";
 import { cn } from "@/lib/utils";
 import {
@@ -45,8 +46,8 @@ const VidPlayerBox = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full flex items-center justify-center rounded-xl bg-black/90">
-        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+      <div className="w-full h-full flex items-center justify-center rounded-xl bg-basic/90">
+        <div className="w-8 h-8 border-2 border-ink-inverse/30 border-t-ink-inverse rounded-full animate-spin" />
       </div>
     ),
   }
@@ -254,6 +255,9 @@ export default function CourseDetailClient({ course }) {
                 <div className="leading-tight">
                   <p className={cn(poppins_500, "text-sm text-ink group-hover:text-secondary")}>
                     {course.createdBy?.name || "Unknown creator"}
+                    {course.createdBy?.isVerified && (
+                      <VerifiedBadge user={course.createdBy} showLabel={false} />
+                    )}
                   </p>
                   <p className={cn(poppins_400, "text-xs capitalize text-ink-muted")}>
                     {course.createdBy?.role || "Educator"}
