@@ -72,7 +72,7 @@ const SectionHeading = ({ title, subtitle }) => (
 const HOW_IT_WORKS = [
   { icon: MousePointerClick, text: "Choose an amount to give" },
   { icon: PenLine, text: "Sign the payment in your Stellar wallet" },
-  { icon: Landmark, text: "It funds the on-chain scholarship pool" },
+  { icon: Landmark, text: "Your donation reaches the Sadaqah fund on Stellar" },
 ];
 
 export default function SadaqahPage() {
@@ -208,9 +208,9 @@ export default function SadaqahPage() {
     <Panel className="flex h-full flex-col justify-center bg-gradient-to-br from-basic to-accent p-6 text-ink-inverse">
       {statsLoading ? (
         <div className="space-y-3">
-          <Skeleton className="h-3 w-28 bg-white/20" />
-          <Skeleton className="h-9 w-40 bg-white/20" />
-          <Skeleton className="h-10 w-full bg-white/10" />
+          <Skeleton className="h-3 w-28 bg-ink-inverse/20" />
+          <Skeleton className="h-9 w-40 bg-ink-inverse/20" />
+          <Skeleton className="h-10 w-full bg-ink-inverse/10" />
         </div>
       ) : statsUnconfigured ? (
         <div className="flex items-center gap-2 text-ink-inverse-muted">
@@ -242,7 +242,7 @@ export default function SadaqahPage() {
               "text-xs uppercase tracking-wider text-ink-inverse-muted"
             )}
           >
-            Scholarship Pool Balance
+            Sadaqah Fund Balance
           </p>
           <p
             dir="ltr"
@@ -256,7 +256,7 @@ export default function SadaqahPage() {
             </span>
           </p>
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+            <div className="rounded-xl border border-ink-inverse/10 bg-ink-inverse/5 px-3 py-2">
               <p className={cn(poppins_400.className, "text-[11px] text-ink-inverse-muted")}>
                 Total donated
               </p>
@@ -267,7 +267,7 @@ export default function SadaqahPage() {
                 ${formatAmount(stats?.totalDonated)}
               </p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+            <div className="rounded-xl border border-ink-inverse/10 bg-ink-inverse/5 px-3 py-2">
               <p className={cn(poppins_400.className, "text-[11px] text-ink-inverse-muted")}>
                 Donations
               </p>
@@ -307,15 +307,13 @@ export default function SadaqahPage() {
                 "mt-3 max-w-xl leading-relaxed text-ink-muted"
               )}
             >
-              Give a charity that keeps on giving. Your donation funds
-              scholarships for students of knowledge, held in a transparent
-              on-chain USDC fund on Stellar — publicly verifiable, from your
-              wallet to the pool.
+              Give Sadaqah directly to the transparent USDC fund on Stellar.
+              Each payment is signed from your wallet and can be verified on
+              the network.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <Chip icon={ShieldCheck}>On-chain transparency</Chip>
               <Chip icon={Coins}>USDC on Stellar</Chip>
-              <Chip icon={Sparkles}>Funds scholarships</Chip>
             </div>
             <a
               href="/transparency"
@@ -341,7 +339,7 @@ export default function SadaqahPage() {
             title={step === "success" ? "Donation Complete!" : "Make a Donation"}
             subtitle={
               {
-                amount: "Choose an amount to donate to the scholarship fund",
+                amount: "Choose an amount to give to the Sadaqah fund",
                 confirm: "Sign with your wallet, or scan the QR with a mobile wallet",
                 processing: "Processing your donation…",
                 success: "May Allah accept it from you",
@@ -373,7 +371,7 @@ export default function SadaqahPage() {
                           poppins_400.className,
                           "text-[10px] uppercase tracking-wider",
                           presetActive(preset)
-                            ? "text-white/70"
+                            ? "text-ink-inverse-muted"
                             : "text-ink-muted"
                         )}
                       >
