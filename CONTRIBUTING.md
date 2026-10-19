@@ -2,36 +2,14 @@
 
 Thank you for your interest in contributing to Deen Bridge! We welcome contributions from the community to help make Islamic education more accessible.
 
-## Drips Wave Program
+## Contribution Workflow
 
-This repository participates in the **Stellar Drips Wave** bounty program. Contributors can earn rewards by resolving issues during Wave cycles. Everyone is welcome to contribute — no religious background or knowledge is required; our issues are regular engineering tasks.
+1. Find or open an issue describing the change.
+2. Create a focused branch from `main` and implement the change.
+3. Run the relevant checks described below.
+4. Open a pull request against `main`, link the issue, and summarize the changes and checks.
 
-### How It Works
-
-1. **Find an Issue**: During an active Wave, browse this repo's issues in the [Drips Wave app](https://www.drips.network/wave)
-2. **Apply**: Apply to work on the issue through the Drips Wave app; the maintainer reviews applications and assigns one contributor
-3. **Submit a PR**: Complete the work and open a pull request (base branch `dev`) before the Wave ends
-4. **Earn Points**: Once the issue is marked resolved during the Wave, you earn its Points, which convert to rewards from the Wave pool
-
-### Complexity & Points
-
-Points are assigned per issue by the maintainer in the Drips Wave dashboard using Drips' three complexity tiers:
-
-| Complexity | Points | Typical Scope                              |
-|------------|--------|--------------------------------------------|
-| Trivial    | 100    | Typos, small bug fixes, minor copy changes |
-| Medium     | 150    | Standard features or involved bug fixes    |
-| High       | 200    | Complex features, refactors, integrations  |
-
-Issues carry `complexity:trivial`, `complexity:medium`, or `complexity:high` labels that mirror these tiers.
-
-### Wave Rules
-
-- One contributor per issue — apply through the Drips Wave app; the maintainer reviews all applications and selects who is assigned
-- PRs must be linked to the issue
-- **PRs must target the `dev` branch** (not `main`)
-- Code must pass all tests and linting
-- Follow the coding standards below
+Everyone is welcome to contribute to the platform's engineering work.
 
 ## Getting Started
 
@@ -63,17 +41,17 @@ npm run dev
 
 | Branch | Purpose                                                        |
 |--------|----------------------------------------------------------------|
-| `main` | Stable, production-ready code — releases only                  |
-| `dev`  | Active development — **all pull requests must target `dev`**   |
+| `main` | Active integration and production branch — pull requests target here |
+| `dev`  | Legacy development branch; target only when a maintainer directs |
 
-Maintainers periodically merge `dev` into `main` for releases. Pull requests opened against `main` will be asked to retarget `dev`.
+Changes merged to `main` may be deployed to production. Keep pull requests focused and ensure their required checks pass.
 
 ### Making Changes
 
-1. Create a branch from the latest `dev`:
+1. Create a branch from the latest `main`:
    ```bash
    git fetch upstream
-   git checkout -b feature/your-feature-name upstream/dev
+   git checkout -b feature/your-feature-name upstream/main
    ```
 
 2. Make your changes following our coding standards
@@ -89,7 +67,7 @@ Maintainers periodically merge `dev` into `main` for releases. Pull requests ope
    git commit -m "feat: add wallet connection status indicator"
    ```
 
-5. Push and create a PR **with `dev` as the base branch**:
+5. Push and create a PR **with `main` as the base branch**:
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -129,12 +107,41 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Pull Request Guidelines
 
-1. **Base Branch**: open the PR against `dev`, never `main`
+1. **Base Branch**: open the PR against `main`
 2. **Title**: Use conventional commit format
 3. **Description**: Explain what and why
-4. **Link Issue**: Reference the issue number (`Closes #123`)
+4. **Link Issue**: Include a closing reference such as `Closes #123`; the issue is closed as completed after merge
 5. **Screenshots**: Include for UI changes
 6. **Testing**: Describe how you tested
+7. **Auto-merge gates**: eligible, non-draft PRs are squash-merged when CI and all reported statuses pass, the branch has no conflicts, review requests and threads are resolved, and no `hold`, `do-not-merge`, or `manual-review` label is present.
+
+## Admin Area Development
+
+Work on admin-facing pages has a few extra requirements beyond the general workflow above. Read [`docs/rbac.md`](docs/rbac.md) and [`docs/admin-architecture.md`](docs/admin-architecture.md) before picking up your first admin issue.
+
+### Where things live
+
+| Path | Purpose |
+|------|---------|
+| `lib/auth/roles.js` | Base RBAC — roles (`student` / `educator` / `admin`), capabilities, fail-closed `can()` |
+| `lib/auth/admin-tiers.js` | Admin role tiers (`staff` / `super-admin`) and tier gating, kept isolated so tiers can evolve |
+| `components/auth/AdminTierGuard.jsx` | Page-level guard enforcing super-admin-only surfaces |
+| `components/auth/StepUpConfirmDialog.jsx` | Reusable confirm-to-proceed dialog for sensitive actions |
+
+### Conventions
+
+- **Super-admin-only pages must render inside `AdminTierGuard`.** Never rely on hidden navigation alone — unknown/loading users must see a denial state, not the page.
+- Destructive actions (demote, revoke, delete) go through the step-up confirmation dialog; no plain `confirm()` calls.
+- Tier checks always go through the helpers in `lib/auth/admin-tiers.js` — never read `user.tier` ad hoc inside components.
+- The backend is the real authorization boundary; client-side gating is defense-in-depth only (see `docs/rbac.md`).
+
+### Seeding an admin user locally
+
+Roles come from the [dnb-backend](https://github.com/Deen-Bridge/dnb-backend) user record — the frontend only reads `user.role` (and the tier fields for admins), it never assigns them. To get an admin user for local development:
+
+1. Run dnb-backend locally and point `NEXT_PUBLIC_API_URL` at it (see `.env.example`), then set your test user's `role` to `admin` (plus its `tier` to `super_admin` if you are working on team management) via the backend's seed step or database.
+2. For pure UI work you can instead edit the `userInfo` cookie in your browser devtools and change its `role` value. Client-side checks exist to stop the UI *offering* actions the server would reject — this trick is acceptable for local development only, never in shipped code.
+3. Log out and back in so the auth provider picks up the updated record.
 
 ## Issue Guidelines
 
